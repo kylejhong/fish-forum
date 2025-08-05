@@ -3,6 +3,8 @@ import { Outlet, Link } from 'react-router-dom';
 const Layout = () => {
     return (
         <div className="page">
+            <div className="background-image"></div>
+            <div className="background-image2"></div>
             <div className="header">
                 <div>
                     <p>Fish Forum</p>

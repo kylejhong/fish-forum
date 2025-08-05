@@ -8,6 +8,23 @@ import Post from "./Post.jsx";
 function App() {
   const [posts, setPosts] = useState([]);
   const [sortByCreationTime, setSortByCreationTime] = useState(true);
+  const [search, setSearch] = useState('');
+  const [filtered, setFiltered] = useState(null);
+
+  const searchItems = () => {
+    if (search && search !== "") {
+      setFiltered(
+        posts.filter((post) => {
+          return Object.values(post)
+            .join("")
+            .toLowerCase()
+            .includes(search.toLowerCase())
+        })
+      )
+    } else {
+      setFiltered(posts);
+    }
+  }
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -24,16 +41,25 @@ function App() {
     fetchPosts();
   }, [sortByCreationTime])
 
+  useEffect(() => {
+    searchItems();
+  }, [search, posts])
+
   return (
-    <>
+    <div className="dashboard">
       <div className="sort">
         <p>Order by: </p>
         <button className={sortByCreationTime ? "sortSelectedButton" : "sortUnselectedButton"} onClick={() => {setSortByCreationTime(true)}}>Newest</button>
         <button className={sortByCreationTime ? "sortUnselectedButton" : "sortSelectedButton"} onClick={() => {setSortByCreationTime(false)}}>Most Popular</button>
       </div>
+      <input 
+        type="text" 
+        placeholder="Search..."
+        onChange = {(inputString) => setSearch(inputString.target.value)}
+      />
       <div className="postContainer">
-        {posts && posts.length > 0 ? (
-            [...posts]
+        {filtered && filtered.length > 0 ? (
+            [...filtered]
                 .map((post, index) => (
                     <Post 
                         key={post.id}
@@ -50,7 +76,7 @@ function App() {
             <p>No posts yet!</p>
         )}
       </div>
-    </>
+    </div>
   )
 }
 
